@@ -6,27 +6,26 @@ from PandoraBDT import *
 if __name__=="__main__":
 
     # Settings ------------------------------------------------------------------------------------
-    
+
     trainingFile      = '/Path/To/Training/Samples.txt'
-    trainingMomentum  = 3
-    testingFiles      = []
+    trainingMomentum  = 5
     testingFiles      = [
                             {'File' : '/Path/To/Testing/Samples_1.txt', 'Momentum': 1 },
                             {'File' : '/Path/To/Testing/Samples_2.txt', 'Momentum': 2 }
                         ]
     bdtName           = 'BdtExample'
-    treeDepth         = int(sys.argv[1]) 
-    nTrees            = int(sys.argv[2]) 
+    treeDepth         = int(sys.argv[1])
+    nTrees            = int(sys.argv[2])
     trainTestSplit    = 0.5
 
     plotFeatures      = False # Draws distributions of signal and background class features, then exits
-    serializeToPkl    = True 
-    serializeToXml    = True 
-    loadFromPkl       = False 
-    makeScorePlots    = True # Makes plots of BDT score for training and testing samples 
+    serializeToPkl    = True
+    serializeToXml    = True
+    loadFromPkl       = False
+    makeScorePlots    = True # Makes plots of BDT score for training and testing samples
     xmlFileName       = bdtName + '_NTrees_' + str(nTrees) + '_TreeDepth_' + str(treeDepth) + '.xml'
     pklFileName       = bdtName + '_NTrees_' + str(nTrees) + '_TreeDepth_' + str(treeDepth) + '.pkl'
-    
+
     #----------------------------------------------------------------------------------------------
 
     if plotFeatures:
@@ -43,13 +42,13 @@ if __name__=="__main__":
     if loadFromPkl:
         OverwriteStdout('Loading model from file ' + pklFileName + '\n')
         bdtModel = LoadFromPkl(pklFileName)
-    
+
     else:
         # Load the training data
         OverwriteStdout('Loading training set data from file ' + trainingFile + '\n')
         trainSet, nFeatures, nExamples = LoadData(trainingFile, ',')
         X_org, Y_org = SplitTrainingSet(trainSet, nFeatures)
-        
+
         # Train the BDT
         X, Y = Randomize(X_org, Y_org)
         X_train, Y_train, X_test, Y_test = Sample(X, Y, trainTestSplit)
@@ -57,13 +56,13 @@ if __name__=="__main__":
         OverwriteStdout('Training AdaBoostClassifer...')
         bdtModel, trainingTime = TrainAdaBoostClassifer(X_train, Y_train, n_estimatorsValue=nTrees, max_depthValue=treeDepth)
 
-        OverwriteStdout(('Trained AdaBoostClassifer with ' + str(nFeatures) + ' features and ' + 
+        OverwriteStdout(('Trained AdaBoostClassifer with ' + str(nFeatures) + ' features and ' +
                          str(nExamples) + ' examples (%d seconds, %i TreeDepth, %i nTrees)\n' % (trainingTime, treeDepth, nTrees)))
-                  
+
         # Validate the model 
         modelScore = ValidateModel(bdtModel, X_test, Y_test)
         OverwriteStdout('Model score: %.2f%%\n' % (modelScore * 100))
-        
+
         if serializeToXml:
             OverwriteStdout('Writing model to xml file ' + xmlFileName + '\n')
             datetimeString = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
@@ -72,15 +71,15 @@ if __name__=="__main__":
         if serializeToPkl:
             OverwriteStdout('Writing model to pkl file ' + pklFileName + '\n')
             SerializeToPkl(pklFileName, bdtModel)
-            
+
     # Do other stuff with your trained/loaded model
     # ...
 
     if makeScorePlots:
         parameters = {
-                         'ClassNames':['Beam Particle','Cosmic Rays'], 
+                         'ClassNames':['Beam Particle','Cosmic Rays'],
                          'SignalDefinition': [1, 0],
-                         'PlotColors': ['b', 'r'], 
+                         'PlotColors': ['b', 'r'],
                          'nBins': 100,
                          'PlotStep': 1.0,
                          'OptimalBinCut': 0,
@@ -89,7 +88,7 @@ if __name__=="__main__":
                          'TreeDepth': treeDepth
                      }
 
-        FindOptimalSignificanceCut(bdtModel, X_train, Y_train, parameters) 
+        FindOptimalSignificanceCut(bdtModel, X_train, Y_train, parameters)
         PlotBdtScores(bdtModel, X_test, Y_test, trainingMomentum, parameters)
 
         for idx, testFile in enumerate(testingFiles):
