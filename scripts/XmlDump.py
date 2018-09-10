@@ -15,20 +15,20 @@ def WriteConv2DXml(modelFile, layer, indentation):
     borderMode = layer.get_config()['padding']
 
     nKernels = weights.shape[3]
-    depth = weights.shape[2]
+    nDeep = weights.shape[2]
     nRows = weights.shape[1]
     nCols = weights.shape[0]
 
     indentation = OpenXmlTag(modelFile, 'LayerConv2D', indentation)
-    modelFile.write((' ' * indentation) + '<LayerConv2DConfig borderMode="' + str(borderMode) + '" nKernels="' + str(nKernels) + '" nDeep="' + str(depth) + '" nRows="' + str(nRows) + '" nCols="' + str(nCols) + '"/>\n')
+    modelFile.write((' ' * indentation) + '<LayerConv2DConfig borderMode="' + str(borderMode) + '" nKernels="' + str(nKernels) + '" nDeep="' + str(nDeep) + '" nRows="' + str(nRows) + '" nCols="' + str(nCols) + '"/>\n')
 
     for kernel in range(nKernels):
-        for depth in range(depth):
+        for depth in range(nDeep):
             for row in range(nRows):
                 for col in range(nCols):
                     modelFile.write((' ' * indentation) + '<Conv2DWeight kernel="' + str(kernel) + '" depth="' + str(depth) + '" row="' + str(row) + '" col="' + str(col) + '" value="' + str(weights[row, col, depth, kernel]) + '"/>\n')
 
-    for idx, value in enumerate(bias):
+    for kernel, value in enumerate(bias):
         modelFile.write((' ' * indentation) + '<Conv2DBias kernel="' + str(kernel) + '" bias="' + str(value) + '"/>\n')
 
     CloseXmlTag(modelFile, 'LayerConv2D', indentation)
