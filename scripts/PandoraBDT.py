@@ -20,10 +20,10 @@ import math
 from PandoraMVA import *
 
 def DrawVariables(X, Y):
-    plot_colors = ['r', 'g', 'b']
+    plot_colors = ['g', 'r']
     plot_step = 1.0
-    class_names = ['Beam Particle', 'Background Beam Particle', 'Cosmic Rays']
-    signal_definition = [2, 1, 0]
+    class_names = ['Target Vertices', 'Other Vertices']
+    signal_definition = [1, 0]
 
     num_rows, num_cols = X.shape
     for feature in range(0, num_cols):
@@ -97,16 +97,21 @@ def Correlation(X, Y):
 
 #--------------------------------------------------------------------------------------------------
 
-def TrainAdaBoostClassifer(X_train, Y_train, n_estimatorsValue=3, max_depthValue=2, learning_rateValue=1.0, 
-                           algorithmValue='SAMME', random_stateValue=None):
+def TrainAdaBoostClassifer(X_train, Y_train, n_estimatorsValue=3, max_depthValue=2, learning_rateValue=1.0,
+                           algorithmValue='SAMME', random_stateValue=None, sample_weights=None):
     # Load the BDT object
-    bdtModel = AdaBoostClassifier(DecisionTreeClassifier(max_depth=max_depthValue), 
-                                  n_estimators=n_estimatorsValue, learning_rate=learning_rateValue, 
-                                  algorithm=algorithmValue, random_state=random_stateValue) 
-    
-    # Train the model   
-    startTime = time.time() 
-    bdtModel.fit(X_train, Y_train)
+    bdtModel = AdaBoostClassifier(DecisionTreeClassifier(max_depth=max_depthValue),
+                                  n_estimators=n_estimatorsValue, learning_rate=learning_rateValue,
+                                  algorithm=algorithmValue, random_state=random_stateValue)
+
+    # Train the model
+    startTime = time.time()
+
+    if sample_weights is not None:
+        bdtModel.fit(X_train, Y_train, sample_weights)
+    else:
+        bdtModel.fit(X_train, Y_train)
+
     endTime = time.time()
 
     return bdtModel, endTime - startTime
@@ -120,7 +125,7 @@ def WriteXmlFile(filePath, adaBoostClassifer):
         indentation = OpenXmlTag(modelFile,    'AdaBoostDecisionTree', indentation)
         WriteXmlFeature(modelFile, 'BeamParticleId', 'Name', indentation)
         WriteXmlFeature(modelFile, datetimeString, 'Timestamp', indentation)
-        
+
         for idx, estimator in enumerate(adaBoostClassifer.estimators_):
             boostWeight = adaBoostClassifer.estimator_weights_[idx]
             WriteDecisionTree(estimator, modelFile, indentation, idx, boostWeight)
@@ -152,7 +157,7 @@ def Recurse(node, parentnode, depth, position, indentation, decisionTree, modelF
             WriteXmlFeature(modelFile, 'true', 'Outcome', indentation)
         else:
             WriteXmlFeature(modelFile, 'false', 'Outcome', indentation)
-        
+
         indentation = CloseXmlTag(modelFile, 'Node', indentation)
 
 #--------------------------------------------------------------------------------------------------
@@ -172,13 +177,12 @@ def WriteDecisionTree(estimator, modelFile, indentation, treeIdx, boostWeight):
 def SerializeToPkl(fileName, model):
     with open(fileName, 'wb') as f:
         pickle.dump(model, f)
-    
+
 #--------------------------------------------------------------------------------------------------
-    
+
 def LoadFromPkl(fileName):
     with open(fileName, 'rb') as f:
-        model = pickle.load(f) 
-        
+        model = pickle.load(f)
         return model
 
 #--------------------------------------------------------------------------------------------------
@@ -242,16 +246,16 @@ def FindOptimalSignificanceCut(bdtModel, X_train, Y_train, parameters):
 
 #--------------------------------------------------------------------------------------------------
 
-def PlotBdtScores(bdtModel, X_test, Y_test, momentum, parameters):
+def PlotBdtScores(bdtModel, X_test, Y_test, description, parameters):
     # Testing BDT Using Remainder of Training Sample
     test_results = bdtModel.decision_function(X_test)
     fig, ax = plt.subplots()
 
-    ax.set_title(str(momentum) + " Gev Beam Cosmic")
-   
+    ax.set_title(str(description))
+
     sigEff = 0
     bkgRej = 0
-    
+
     for i, n, g in zip(parameters['SignalDefinition'], parameters['ClassNames'], parameters['PlotColors']):
         entries, bins, patches = ax.hist(test_results[Y_test == i],
                                          bins = parameters['nBins'],
@@ -260,19 +264,19 @@ def PlotBdtScores(bdtModel, X_test, Y_test, momentum, parameters):
                                          label='Class %s' % n,
                                          alpha=.5,
                                          edgecolor='k')
-        if i == 1:                       
+        if i == 1:
             nEntries = sum(entries)
             nEntriesPassing = sum(entries[parameters['OptimalBinCut']:])
             sigEff = nEntriesPassing/nEntries
-        elif i == 0: 
+        elif i == 0:
             nEntries = sum(entries)
             nEntriesFailing = sum(entries[:parameters['OptimalBinCut']])
             bkgRej = nEntriesFailing/nEntries
-           
+
     plt.text(0.75, 0.75, "Sig Eff {:.4%}, \nBkg Rej {:.4%}, \nScore Cut {:.2}".format(sigEff,bkgRej,parameters['OptimalScoreCut']),
             horizontalalignment='center',
             verticalalignment='center',
-            transform = ax.transAxes) 
+            transform = ax.transAxes)
 
     plt.yscale('log')
     x1, x2, y1, y2 = plt.axis()
@@ -281,4 +285,4 @@ def PlotBdtScores(bdtModel, X_test, Y_test, momentum, parameters):
     plt.ylabel('Samples')
     plt.xlabel('Score')
     plt.tight_layout()
-    plt.savefig('TrainingBdt_NTrees_' + str(parameters['nTrees']) + '_TreeDepth_' + str(parameters['TreeDepth']) + '_' + str(momentum) + '_GeV_Beam_Cosmics.pdf')
+    plt.savefig('TrainingBdt_NTrees_' + str(parameters['nTrees']) + '_TreeDepth_' + str(parameters['TreeDepth']) + '_' + str(description).replace(" ","") + '.pdf')

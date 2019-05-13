@@ -9,20 +9,49 @@ import sys
 import time
 import pickle
 
+#--------------------------------------------------------------------------------------------------
+
+def LoadDatasets(trainingFileNames, delimiter=','):
+    trainingSet = None
+    nFeatures = None
+    nExamples = None
+
+    nExamplesList = []
+
+    for fileName in trainingFileNames:
+        trainingSetActive, nFeaturesActive, nExamplesActive = LoadData(fileName, delimiter)
+        nExamplesList.append(nExamplesActive)
+
+        if trainingSet is not None:
+            if nFeaturesActive != nFeatures:
+                print("Attempting to load data from files with differing format.  Exiting...")
+                sys.exit()
+
+            trainingSet = np.concatenate((trainingSet, trainingSetActive))
+            nExamples += nExamplesActive
+
+        else:
+            trainingSet = trainingSetActive
+            nFeatures = nFeaturesActive
+            nExamples = nExamplesActive
+
+    return np.array(trainingSet), nFeatures, nExamples, nExamplesList
+
+#--------------------------------------------------------------------------------------------------
+
 def LoadData(trainingFileName, delimiter=','):
     # Use the first example to get the number of columns
     with open(trainingFileName) as file:
         ncols = len(file.readline().split(delimiter))
-        
+
     # First column is a datestamp, so skip it
-    trainingSet = np.genfromtxt(trainingFileName, delimiter=delimiter, usecols=range(1,ncols), 
+    trainingSet = np.genfromtxt(trainingFileName, delimiter=delimiter, usecols=range(1,ncols),
                                 dtype=None)
-                                
+
     nExamples = trainingSet.size
     nFeatures = ncols - 2 # last column is the response
-    
-    return np.array(trainingSet), nFeatures, nExamples
-    
+    return np.array(trainingSet), int(nFeatures), int(nExamples)
+
 #--------------------------------------------------------------------------------------------------
 
 def SplitTrainingSet(trainingSet, nFeatures):
@@ -34,32 +63,41 @@ def SplitTrainingSet(trainingSet, nFeatures):
         features = []
         for i in range(0, nFeatures):
             features.append(float(example[i])) # features in this SVM must be Python float
-            
+
         X.append(features)
 
     return np.array(X).astype(np.float64), np.array(Y).astype(np.int)
-    
+
 #--------------------------------------------------------------------------------------------------
 
-def Randomize(X, Y, setSameSeed=False):
+def Randomize(X, Y, sample_weights=None, setSameSeed=False):
     if setSameSeed:
         np.random.seed(0)
 
     order = np.random.permutation(Y.size)
-    return X[order], Y[order]
-    
+
+    if sample_weights is not None:
+        return X[order], Y[order], sample_weights[order]
+    else:
+        return X[order], Y[order]
+
 #--------------------------------------------------------------------------------------------------
 
-def Sample(X, Y, testFraction=0.1):
+def Sample(X, Y, sample_weights=None, testFraction=0.1):
     trainSize = int((1.0 - testFraction) * Y.size)
-    
+
     X_train = X[:trainSize]
     Y_train = Y[:trainSize]
     X_test  = X[trainSize:]
     Y_test  = Y[trainSize:]
-    
-    return X_train, Y_train, X_test, Y_test
-    
+
+    if sample_weights is None:
+        return X_train, Y_train, X_test, Y_test
+    else:
+        sample_weight_train = sample_weights[:trainSize]
+        sample_weight_test = sample_weights[trainSize:]
+        return X_train, Y_train, sample_weight_train, X_test, Y_test, sample_weight_test
+
 #--------------------------------------------------------------------------------------------------
 
 def ValidateModel(model, X_test, Y_test):               
