@@ -285,4 +285,4 @@ def PlotBdtScores(bdtModel, X_test, Y_test, description, parameters):
     plt.ylabel('Samples')
     plt.xlabel('Score')
     plt.tight_layout()
-    plt.savefig('TrainingBdt_NTrees_' + str(parameters['nTrees']) + '_TreeDepth_' + str(parameters['TreeDepth']) + '_' + str(description).replace(" ","") + '.pdf')
+    plt.savefig('TestingBdt_NTrees_' + str(parameters['nTrees']) + '_TreeDepth_' + str(parameters['TreeDepth']) + '_' + str(description).replace(" ","") + '.pdf')

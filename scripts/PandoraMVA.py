@@ -14,13 +14,11 @@ import pickle
 def LoadDatasets(trainingFileNames, delimiter=','):
     trainingSet = None
     nFeatures = None
-    nExamples = None
-
     nExamplesList = []
 
     for fileName in trainingFileNames:
-        trainingSetActive, nFeaturesActive, nExamplesActive = LoadData(fileName, delimiter)
-        nExamplesList.append(nExamplesActive)
+        trainingSetActive, nFeaturesActive, nExamples = LoadData(fileName, delimiter)
+        nExamplesList.append(nExamples)
 
         if trainingSet is not None:
             if nFeaturesActive != nFeatures:
@@ -28,14 +26,12 @@ def LoadDatasets(trainingFileNames, delimiter=','):
                 sys.exit()
 
             trainingSet = np.concatenate((trainingSet, trainingSetActive))
-            nExamples += nExamplesActive
 
         else:
             trainingSet = trainingSetActive
             nFeatures = nFeaturesActive
-            nExamples = nExamplesActive
 
-    return np.array(trainingSet), nFeatures, nExamples, nExamplesList
+    return np.array(trainingSet), nFeatures, nExamplesList
 
 #--------------------------------------------------------------------------------------------------
 
@@ -100,7 +96,7 @@ def Sample(X, Y, sample_weights=None, testFraction=0.1):
 
 #--------------------------------------------------------------------------------------------------
 
-def ValidateModel(model, X_test, Y_test):               
+def ValidateModel(model, X_test, Y_test):
     return model.score(X_test, Y_test)
 
 #--------------------------------------------------------------------------------------------------
