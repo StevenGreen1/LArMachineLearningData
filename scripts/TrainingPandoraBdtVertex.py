@@ -8,27 +8,27 @@ if __name__=="__main__":
     # Settings ------------------------------------------------------------------------------------
 
     trainingFiles     = [
-                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_1GeV.txt',
-                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_3GeV.txt',
-                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_5GeV.txt',
-                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_7GeV.txt',
-                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_1GeV.txt',
-                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_3GeV.txt',
-                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_5GeV.txt',
-                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_7GeV.txt'
+                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_1GeV.txt',
+                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_3GeV.txt',
+                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_5GeV.txt',
+                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_7GeV.txt',
+                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_1GeV.txt',
+                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_3GeV.txt',
+                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_5GeV.txt',
+                            '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_7GeV.txt'
                         ]
     trainingDescription  = '1-7 GeV Electrons and Pions'
     testingFiles      = [
-                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_1GeV.txt', 'Description': '1 GeV Electrons' },
-                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_3GeV.txt', 'Description': '3 GeV Electrons' },
-			    {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_5GeV.txt', 'Description': '5 GeV Electrons' },
-                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_7GeV.txt', 'Description': '7 GeV Electrons' },
-                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_1GeV.txt', 'Description': '1 GeV Pi Plus' },
-                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_3GeV.txt', 'Description': '3 GeV Pi Plus' },
-                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_5GeV.txt', 'Description': '5 GeV Pi Plus' },
-                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/RegionTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_7GeV.txt', 'Description': '7 GeV Pi Plus' },
+                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_1GeV.txt', 'Description': '1 GeV Electrons' },
+                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_3GeV.txt', 'Description': '3 GeV Electrons' },
+			    {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_5GeV.txt', 'Description': '5 GeV Electrons' },
+                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_E_7GeV.txt', 'Description': '7 GeV Electrons' },
+                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_1GeV.txt', 'Description': '1 GeV Pi Plus' },
+                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_3GeV.txt', 'Description': '3 GeV Pi Plus' },
+                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_5GeV.txt', 'Description': '5 GeV Pi Plus' },
+                            {'File' : '/Users/stevengreen/Documents/PostDoc/LAr/2019/April/VertexBDT/Training/Samples/VertexTraining_ProtoDUNE_BDTVertexing_BEAM_PARTICLE_PI_PLUS_7GeV.txt', 'Description': '7 GeV Pi Plus' },
                         ]
-    bdtName           = 'RegionVertex_ProtoDUNE'
+    bdtName           = 'Vertex_ProtoDUNE'
     treeDepth         = int(sys.argv[1])
     nTrees            = int(sys.argv[2])
     trainTestSplit    = 0.5
